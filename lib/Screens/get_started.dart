@@ -1,4 +1,5 @@
 import 'package:blind_alert/Screens/login.dart';
+import 'package:blind_alert/Screens/signup.dart';
 import 'package:blind_alert/widgets/primarybutton.dart';
 import 'package:flutter/material.dart';
 import 'package:blind_alert/utils.dart';
@@ -84,7 +85,11 @@ class GetStarted extends StatelessWidget {
                           fontclr: AppColors.text,
                           color: AppColors.secondary,
                           width: double.infinity,
-                          ontap: () {},
+                          ontap: () => Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const SignUpScreen()),
+                              (Route<dynamic> route) => false),
                         ),
                       ],
                     ),

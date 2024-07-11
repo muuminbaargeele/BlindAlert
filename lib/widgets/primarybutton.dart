@@ -50,10 +50,10 @@ class Primarybutton extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 isLoading ?? false
-                    ? SizedBox(
-                        height: v * 0.035,
-                        width: h * 0.073,
-                        child: const CircularProgressIndicator(
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
                           color: Colors.white,
                         ),
                       )

@@ -4,20 +4,25 @@ import 'package:blind_alert/app_text_style.dart';
 import 'package:blind_alert/utils.dart';
 import 'package:blind_alert/widgets/is_driver_buttons.dart';
 import 'package:blind_alert/widgets/login_content.dart';
-import 'package:blind_alert/widgets/mytextfield.dart';
-import 'package:blind_alert/widgets/primarybutton.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({super.key, this.isDriver});
+   final bool? isDriver;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool isDriver = true;
+   bool isDriver = false;
+
+   @override
+  void initState() {
+    super.initState();
+    isDriver = widget.isDriver ?? false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,21 +72,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Row(
                     children: [
                       IsDriverButtons(
-                        isDriver: !isDriver,
+                        isDriver: isDriver,
                         ontap: () => setState(
-                          () => isDriver = !isDriver,
+                          () => isDriver = false,
                         ),
                         image:
-                            "assets/images/${!isDriver ? "in_" : ""}active_blind.png",
+                            "assets/images/${isDriver ? "in_" : ""}active_blind.png",
                       ),
                       widthSpace(27),
                       IsDriverButtons(
-                        isDriver: isDriver,
+                        isDriver: !isDriver,
                         ontap: () => setState(
-                          () => isDriver = !isDriver,
+                          () => isDriver = true,
                         ),
                         image:
-                            "assets/images/${isDriver ? "in_" : ""}active_bus.png",
+                            "assets/images/${!isDriver ? "in_" : ""}active_bus.png",
                       )
                     ],
                   ),
@@ -135,3 +140,4 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+

@@ -9,13 +9,29 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.4.1
   font_awesome_flutter: ^10.7.0
   google_fonts: ^6.2.1
+  http: ^1.2.1
+  pin_code_fields: ^8.0.1
 
 dev_dependencies:
   flutter_lints: ^3.0.0
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/app_icon.png"
+
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/images/splash_screen.png
+  android: true
+  ios: true
+  fullscreen: true
 
 flutter:
   uses-material-design: true
