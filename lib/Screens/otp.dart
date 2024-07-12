@@ -1,9 +1,9 @@
 import 'package:blind_alert/Screens/login.dart';
-import 'package:blind_alert/app_colors.dart';
-import 'package:blind_alert/app_text_style.dart';
+import 'package:blind_alert/Helpers/app_colors.dart';
+import 'package:blind_alert/Helpers/app_text_style.dart';
 import 'package:blind_alert/databases/end_points.dart';
 import 'package:blind_alert/databases/network_utils.dart';
-import 'package:blind_alert/utils.dart';
+import 'package:blind_alert/Helpers/utils.dart';
 import 'package:blind_alert/widgets/errorcatch.dart';
 import 'package:blind_alert/widgets/otptextfield.dart';
 import 'package:blind_alert/widgets/primarybutton.dart';

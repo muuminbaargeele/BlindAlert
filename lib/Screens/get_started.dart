@@ -2,9 +2,9 @@ import 'package:blind_alert/Screens/login.dart';
 import 'package:blind_alert/Screens/signup.dart';
 import 'package:blind_alert/widgets/primarybutton.dart';
 import 'package:flutter/material.dart';
-import 'package:blind_alert/utils.dart';
-import 'package:blind_alert/app_colors.dart';
-import 'package:blind_alert/app_text_style.dart';
+import 'package:blind_alert/Helpers/utils.dart';
+import 'package:blind_alert/Helpers/app_colors.dart';
+import 'package:blind_alert/Helpers/app_text_style.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class GetStarted extends StatelessWidget {
@@ -69,13 +69,11 @@ class GetStarted extends StatelessWidget {
                           fontclr: AppColors.primaryText,
                           color: AppColors.primary,
                           width: double.infinity,
-                          ontap: () {
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const LoginScreen()),
-                                (Route<dynamic> route) => false);
-                          },
+                          ontap: () => Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const SignUpScreen()),
+                              (Route<dynamic> route) => false),
                         ),
                         const SizedBox(
                           height: 10,
@@ -85,11 +83,13 @@ class GetStarted extends StatelessWidget {
                           fontclr: AppColors.text,
                           color: AppColors.secondary,
                           width: double.infinity,
-                          ontap: () => Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => const SignUpScreen()),
-                              (Route<dynamic> route) => false),
+                          ontap: () {
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const LoginScreen()),
+                                (Route<dynamic> route) => false);
+                          },
                         ),
                       ],
                     ),

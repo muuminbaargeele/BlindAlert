@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:blind_alert/Screens/login.dart';
 import 'package:blind_alert/Screens/otp.dart';
-import 'package:blind_alert/app_colors.dart';
-import 'package:blind_alert/app_text_style.dart';
-import 'package:blind_alert/utils.dart';
+import 'package:blind_alert/Helpers/app_colors.dart';
+import 'package:blind_alert/Helpers/app_text_style.dart';
+import 'package:blind_alert/Helpers/utils.dart';
 import 'package:blind_alert/widgets/mytextfield.dart';
 import 'package:blind_alert/widgets/primarybutton.dart';
 

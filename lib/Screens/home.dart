@@ -1,8 +1,13 @@
-import 'package:blind_alert/Screens/login.dart';
-import 'package:blind_alert/app_colors.dart';
-import 'package:blind_alert/app_text_style.dart';
-import 'package:blind_alert/utils.dart';
+import 'package:blind_alert/Helpers/app_colors.dart';
+import 'package:blind_alert/Helpers/utils.dart';
+import 'package:blind_alert/Providers/get_user.dart';
+import 'package:blind_alert/Providers/last_voice.dart';
+import 'package:blind_alert/widgets/header.dart';
+import 'package:blind_alert/widgets/navigation_buttons.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../widgets/home_deriver_info.dart';
+import '../widgets/home_voice_content.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen(
@@ -13,73 +18,57 @@ class HomeScreen extends StatefulWidget {
   final String? email;
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HomeScreen> createState() => HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreenState extends State<HomeScreen> {
+  bool isVoicePage = true;
+
   @override
   Widget build(BuildContext context) {
+    final userModelProvider = Provider.of<UserModelProvider>(context);
+    final lastVoiceModelProvider = Provider.of<LastVoiceModelProvider>(context);
     return Scaffold(
-      body: Container(
-        height: calculateHeightRatio(120, context),
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          color: AppColors.primary,
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(16),
-            bottomRight: Radius.circular(16),
+      body: Column(
+        children: [
+          Header(
+            widget: widget,
           ),
-        ),
-        child: SafeArea(
-            child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Image.asset(
-                      "assets/images/${widget.isDriver ? "active_bus.png" : "active_blind.png"}"),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Ahmed Khalif Muumin",
-                        style: TextStyle(
-                            color: AppColors.primaryText,
-                            fontSize: calculateHeightRatio(14, context),
-                            fontWeight: AppTextStyles.semibold),
-                      ),
-                      Text(
-                        widget.isDriver ? "Driver" : "Passenger",
-                        style: TextStyle(
-                          color: AppColors.primaryText,
-                          fontSize: calculateHeightRatio(12, context),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+          isVoicePage
+              ? HomeVoiceContent(
+                  lastVoiceModelProvider: lastVoiceModelProvider,
+                )
+              : HomeDriverInfo(userModelProvider: userModelProvider),
+          Container(
+            height: calculateHeightRatio(80, context),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: AppColors.secondaryWithOpacity,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(12),
+                topRight: Radius.circular(12),
               ),
-              GestureDetector(
-                  onTap: () {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => LoginScreen(
-                                  isDriver: widget.isDriver,
-                                )),
-                        (Route<dynamic> route) => false);
-                  },
-                  child: Image.asset("assets/images/exit.png")),
-            ],
-          ),
-        )),
+            ),
+            child: Row(
+              children: [
+                NavigationButtons(
+                  isVoicePage: isVoicePage,
+                  ontap: () => setState(() => isVoicePage = true),
+                  image:
+                      "assets/images/${isVoicePage ? "active_voice.png" : "in_active_voice.png"}",
+                  text: "Voices",
+                ),
+                NavigationButtons(
+                  isVoicePage: !isVoicePage,
+                  ontap: () => setState(() => isVoicePage = false),
+                  image:
+                      "assets/images/${!isVoicePage ? "active_bus.png" : "in_active_bus.png"}",
+                  text: "Driver",
+                ),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }

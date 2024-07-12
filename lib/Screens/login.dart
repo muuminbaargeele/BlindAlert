@@ -1,27 +1,31 @@
 import 'package:blind_alert/Screens/signup.dart';
-import 'package:blind_alert/app_colors.dart';
-import 'package:blind_alert/app_text_style.dart';
-import 'package:blind_alert/utils.dart';
+import 'package:blind_alert/Helpers/app_colors.dart';
+import 'package:blind_alert/Helpers/app_text_style.dart';
+import 'package:blind_alert/Helpers/utils.dart';
 import 'package:blind_alert/widgets/is_driver_buttons.dart';
 import 'package:blind_alert/widgets/login_content.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key, this.isDriver});
-   final bool? isDriver;
+  final bool? isDriver;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-   bool isDriver = false;
+  bool isDriver = false;
+  late Box box;
 
-   @override
+  @override
   void initState() {
     super.initState();
     isDriver = widget.isDriver ?? false;
+    box = Hive.box('local_storage');
+    box.put("isLogin", false);
   }
 
   @override
@@ -94,6 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 heightSpace(20),
                 LoginContent(
                   isDriver: isDriver,
+                  box: box,
                 ),
                 Expanded(
                   child: Padding(
@@ -140,4 +145,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
