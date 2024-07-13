@@ -10,7 +10,7 @@ LastVoice lastVoiceFromJson(Map<String, dynamic> str) =>
 String lastVoiceToJson(LastVoice data) => json.encode(data.toJson());
 
 class LastVoice {
-  final int id;
+  final int? id;
   final String voiceBase64;
   final String senderEmail;
   final String senderPhoneNumber;

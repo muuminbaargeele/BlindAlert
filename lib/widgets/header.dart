@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 
-import '../Providers/last_voice.dart';
 import '../databases/end_points.dart';
 import '../databases/network_utils.dart';
 import '../models/Passenger/passenger_model.dart';
@@ -34,30 +33,6 @@ class _HeaderState extends State<Header> {
   String? userFullName;
   late Box box;
   late String userId = "";
-
-  Future<void> getVoice(String driverEmail) async {
-    final lastVoiceModelProvider =
-        Provider.of<LastVoiceModelProvider>(context, listen: false);
-    lastVoiceModelProvider.setLoading(true);
-    final params = {"email": driverEmail};
-    print(params);
-    try {
-      final response = await NetworkUtil.postData(getLastVoiceEndPoint, params);
-      if (response.isSuccess) {
-        lastVoice = lastVoiceFromJson(response.payload!.data);
-        lastVoiceModelProvider.setLastVoiceModel(lastVoice);
-        lastVoiceModelProvider.setLoading(false);
-      } else {
-        showErrorSnackBar(
-            context, response.error?.message ?? "Unknown error occurred");
-        lastVoiceModelProvider.setLoading(true);
-      }
-    } catch (e) {
-      print("$e");
-      showErrorSnackBar(context, "Failed to connect. Check your network.");
-      lastVoiceModelProvider.setLoading(true);
-    }
-  }
 
   Future<void> getUser() async {
     bool isDriver = widget.widget.isDriver;
@@ -91,7 +66,6 @@ class _HeaderState extends State<Header> {
           passengerModel = passengerModelFromJson(response.payload!.data);
           userModelProvider.setPassengerModel(passengerModel);
           userModelProvider.setLoading(false);
-          await getVoice(userModelProvider.passengerModel.driverEmail);
         } else {
           showErrorSnackBar(
               context, response.error?.message ?? "Unknown error occurred");

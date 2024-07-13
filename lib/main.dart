@@ -31,7 +31,10 @@ Future<void> main() async {
   } catch (e) {
     print("Failed to initialize Firebase: $e");
   }
-  runApp(const MainApp());
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => UserModelProvider()),
+    ChangeNotifierProvider(create: (_) => LastVoiceModelProvider()),
+  ], child: const MainApp()));
 }
 
 class MainApp extends StatelessWidget {
@@ -50,22 +53,17 @@ class MainApp extends StatelessWidget {
     box = Hive.box('local_storage');
     bool isLogin = box.get('isLogin', defaultValue: false);
     bool isDriver = box.get('isDriver', defaultValue: false);
+    FirebaseApi().litsenAudio(context);
 
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => UserModelProvider()),
-        ChangeNotifierProvider(create: (_) => LastVoiceModelProvider()),
-      ],
-      child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            scaffoldBackgroundColor: Colors.white,
-            // Use the GoogleFonts helper to get the Poppins font and set it as the default text theme
-            textTheme: GoogleFonts.poppinsTextTheme(
-              Theme.of(context).textTheme,
-            ),
+    return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          scaffoldBackgroundColor: Colors.white,
+          // Use the GoogleFonts helper to get the Poppins font and set it as the default text theme
+          textTheme: GoogleFonts.poppinsTextTheme(
+            Theme.of(context).textTheme,
           ),
-          home: isLogin ? HomeScreen(isDriver: isDriver) : const GetStarted()),
-    );
+        ),
+        home: isLogin ? HomeScreen(isDriver: isDriver) : const GetStarted());
   }
 }

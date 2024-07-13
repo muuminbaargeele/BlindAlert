@@ -1,11 +1,11 @@
 import 'package:blind_alert/Helpers/app_colors.dart';
 import 'package:blind_alert/Helpers/utils.dart';
 import 'package:blind_alert/Providers/get_user.dart';
-import 'package:blind_alert/Providers/last_voice.dart';
 import 'package:blind_alert/widgets/header.dart';
 import 'package:blind_alert/widgets/navigation_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../widgets/home_deriver_info.dart';
 import '../widgets/home_voice_content.dart';
 
@@ -27,7 +27,6 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final userModelProvider = Provider.of<UserModelProvider>(context);
-    final lastVoiceModelProvider = Provider.of<LastVoiceModelProvider>(context);
     return Scaffold(
       body: Column(
         children: [
@@ -35,9 +34,7 @@ class HomeScreenState extends State<HomeScreen> {
             widget: widget,
           ),
           isVoicePage
-              ? HomeVoiceContent(
-                  lastVoiceModelProvider: lastVoiceModelProvider,
-                )
+              ? HomeVoiceContent()
               : HomeDriverInfo(userModelProvider: userModelProvider),
           Container(
             height: calculateHeightRatio(80, context),

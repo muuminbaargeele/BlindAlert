@@ -1,15 +1,19 @@
 import 'package:blind_alert/Firebase/firebase_api.dart';
-import 'package:blind_alert/Screens/home.dart';
 import 'package:blind_alert/Helpers/app_colors.dart';
 import 'package:blind_alert/Helpers/app_text_style.dart';
+import 'package:blind_alert/Helpers/utils.dart';
+import 'package:blind_alert/Screens/home.dart';
 import 'package:blind_alert/databases/end_points.dart';
 import 'package:blind_alert/databases/network_utils.dart';
-import 'package:blind_alert/Helpers/utils.dart';
 import 'package:blind_alert/widgets/mytextfield.dart';
 import 'package:blind_alert/widgets/primarybutton.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
+
+import '../Providers/get_user.dart';
+import '../models/Passenger/passenger_model.dart';
 
 class LoginContent extends StatefulWidget {
   const LoginContent({
@@ -35,6 +39,8 @@ class _LoginContentState extends State<LoginContent> {
 
   bool isEyeOn = true;
   bool isLoading = false;
+
+  late PassengerModel passengerModel;
 
   @override
   Widget build(BuildContext context) {
@@ -148,24 +154,54 @@ class _LoginContentState extends State<LoginContent> {
       required BuildContext context,
       required Box box}) async {
     setState(() => isLoading = true);
-     bool isDriver = mobile.isEmpty;
-     String token = "";
+    bool isDriver = mobile.isEmpty;
+    String token = "";
     if (!isDriver) {
-          final firebaseApi = FirebaseApi();
-          token = await firebaseApi.getToken();
-          print("Passenger Token is $token");
-        }
+      final firebaseApi = FirebaseApi();
+      token = await firebaseApi.getToken();
+      print("Passenger Token is $token");
+    }
 
     String endpoint =
         mobile.isNotEmpty ? passengerLoginEndPoint : driverLoginEndPoint;
     final params = mobile.isNotEmpty
-        ? {"phoneNumber": mobile, "fcmToken" : token}
+        ? {"phoneNumber": mobile, "fcmToken": token}
         : {"email": email, "password": password};
 
     try {
       final response = await NetworkUtil.postData(endpoint, params);
       if (response.isSuccess) {
         // Handle successful login
+        getUser(mobile, isDriver, email, box);
+      } else {
+        showErrorSnackBar(
+            context, response.error?.message ?? "Unknown error occurred");
+      }
+    } catch (e) {
+      print("$e");
+      showErrorSnackBar(context, "Failed to connect. Check your network.");
+    } finally {
+      setState(() => isLoading = false);
+    }
+  }
+
+  void showErrorSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(message),
+      backgroundColor: Colors.red,
+    ));
+  }
+
+  Future<void> getUser(mobile, isDriver, email, Box box) async {
+    final userModelProvider =
+        Provider.of<UserModelProvider>(context, listen: false);
+    final params = {"phoneNumber": mobile};
+    try {
+      final response = await NetworkUtil.postData(getPassengerEndPoint, params);
+      if (response.isSuccess) {
+        passengerModel = passengerModelFromJson(response.payload!.data);
+        userModelProvider.setPassengerModel(passengerModel);
+        box.put("UserDriver", userModelProvider.passengerModel.driverEmail);
         box.put("UserId", isDriver ? email : mobile);
         box.put("isLogin", true);
         box.put("isDriver", isDriver);
@@ -185,15 +221,6 @@ class _LoginContentState extends State<LoginContent> {
     } catch (e) {
       print("$e");
       showErrorSnackBar(context, "Failed to connect. Check your network.");
-    } finally {
-      setState(() => isLoading = false);
     }
-  }
-
-  void showErrorSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(message),
-      backgroundColor: Colors.red,
-    ));
   }
 }
