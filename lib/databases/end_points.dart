@@ -6,3 +6,5 @@ const String passengerLoginEndPoint = "${endPoint}passenger/login";
 const String getDriverEndPoint = "${endPoint}driver/get-me";
 const String getPassengerEndPoint = "${endPoint}passenger/get-me";
 const String getLastVoiceEndPoint = "${endPoint}passenger/get-last-voice";
+const String passengerRegisterEndPoint = "${endPoint}driver/register-passenger";
+const String sendVoiceEndPoint = "${endPoint}driver/send-voice";

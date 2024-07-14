@@ -45,6 +45,7 @@ class _HeaderState extends State<Header> {
       try {
         final response = await NetworkUtil.postData(endpoint, params);
         if (response.isSuccess) {
+          print(response.payload!.data);
           driverModel = driverModelFromJson(response.payload!.data);
           userModelProvider.setDriverModel(driverModel);
           userFullName = driverModel.fullName;
@@ -90,11 +91,10 @@ class _HeaderState extends State<Header> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
       box = Hive.box('local_storage');
       userId = box.get("UserId");
       getUser();
-    });
+    
   }
 
   @override

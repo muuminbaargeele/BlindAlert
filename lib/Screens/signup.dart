@@ -49,10 +49,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ? ""
               : "Invalid Email";
       nameError = name.isEmpty
-          ? "Please Enter a Username"
+          ? "Please Enter a Full Name"
           : nameRegex.hasMatch(name)
               ? ""
-              : "Invalid Username";
+              : "Invalid Full Name";
       passwordError = pass.isEmpty
           ? "Please Enter a Password"
           : passwordRegex.hasMatch(pass)

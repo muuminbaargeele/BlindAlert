@@ -4,8 +4,6 @@
 
 import 'dart:convert';
 
-import '../Passenger/passenger_model.dart';
-
 DriverModel driverModelFromJson(Map<String, dynamic> str) =>
     DriverModel.fromJson(str);
 
@@ -17,7 +15,7 @@ class DriverModel {
   final String phoneNumber;
   final String email;
   final DateTime createdDt;
-  final List<PassengerModel> passengers;
+  // final List<PassengerModel> passengers;
 
   DriverModel({
     required this.id,
@@ -25,7 +23,7 @@ class DriverModel {
     required this.phoneNumber,
     required this.email,
     required this.createdDt,
-    required this.passengers,
+    // required this.passengers,
   });
 
   factory DriverModel.fromJson(Map<String, dynamic> json) => DriverModel(
@@ -34,8 +32,8 @@ class DriverModel {
         phoneNumber: json["phoneNumber"],
         email: json["email"],
         createdDt: DateTime.parse(json["createdDT"]),
-        passengers: List<PassengerModel>.from(
-            json["passengers"].map((x) => PassengerModel.fromJson(x))),
+        // passengers: List<PassengerModel>.from(
+        //     json["passengers"].map((x) => PassengerModel.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -44,6 +42,6 @@ class DriverModel {
         "phoneNumber": phoneNumber,
         "email": email,
         "createdDT": createdDt.toIso8601String(),
-        "passengers": List<dynamic>.from(passengers.map((x) => x.toJson())),
+        // "passengers": List<dynamic>.from(passengers.map((x) => x.toJson())),
       };
 }

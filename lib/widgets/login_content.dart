@@ -172,7 +172,22 @@ class _LoginContentState extends State<LoginContent> {
       final response = await NetworkUtil.postData(endpoint, params);
       if (response.isSuccess) {
         // Handle successful login
-        getUser(mobile, isDriver, email, box);
+        if (isDriver) {
+          box.put("UserId", isDriver ? email : mobile);
+          box.put("isLogin", true);
+          box.put("isDriver", isDriver);
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => HomeScreen(
+                        isDriver: isDriver,
+                        mobile: mobile,
+                        email: email,
+                      )),
+              (Route<dynamic> route) => false);
+        } else {
+          getUser(mobile, isDriver, email, box);
+        }
       } else {
         showErrorSnackBar(
             context, response.error?.message ?? "Unknown error occurred");
