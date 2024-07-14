@@ -107,31 +107,36 @@ class _LoginScreenState extends State<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text(
-                          "Don't have an account?",
-                          style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: calculateHeightRatio(14, context)),
-                        ),
-                        const SizedBox(
-                          width: 2,
-                        ),
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const SignUpScreen(),
+                        Row(
+                          children: [
+                            Text(
+                              "Don't have an account?",
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: calculateHeightRatio(14, context)),
+                            ),
+                            const SizedBox(
+                              width: 2,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const SignUpScreen(),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                "Sign Up",
+                                style: TextStyle(
+                                    color: AppColors.text,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize:
+                                        calculateHeightRatio(13, context)),
                               ),
-                            );
-                          },
-                          child: Text(
-                            "Sign Up",
-                            style: TextStyle(
-                                color: AppColors.text,
-                                fontWeight: FontWeight.bold,
-                                fontSize: calculateHeightRatio(13, context)),
-                          ),
+                            ),
+                          ],
                         )
                       ],
                     ),

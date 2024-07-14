@@ -4,15 +4,9 @@ import 'package:blind_alert/Helpers/utils.dart';
 import 'package:blind_alert/Providers/get_user.dart';
 import 'package:blind_alert/Screens/home.dart';
 import 'package:blind_alert/Screens/login.dart';
-import 'package:blind_alert/models/Driver/driver_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
-
-import '../databases/end_points.dart';
-import '../databases/network_utils.dart';
-import '../models/Passenger/passenger_model.dart';
-import '../models/last_voice_model.dart';
 
 class Header extends StatefulWidget {
   const Header({
@@ -27,74 +21,14 @@ class Header extends StatefulWidget {
 }
 
 class _HeaderState extends State<Header> {
-  late PassengerModel passengerModel;
-  late DriverModel driverModel;
-  late LastVoice lastVoice;
-  String? userFullName;
   late Box box;
   late String userId = "";
-
-  Future<void> getUser() async {
-    bool isDriver = widget.widget.isDriver;
-    final userModelProvider =
-        Provider.of<UserModelProvider>(context, listen: false);
-    userModelProvider.setLoading(true);
-    String endpoint = isDriver ? getDriverEndPoint : getPassengerEndPoint;
-    final params = isDriver ? {"email": userId} : {"phoneNumber": userId};
-    if (isDriver) {
-      try {
-        final response = await NetworkUtil.postData(endpoint, params);
-        if (response.isSuccess) {
-          print(response.payload!.data);
-          driverModel = driverModelFromJson(response.payload!.data);
-          userModelProvider.setDriverModel(driverModel);
-          userFullName = driverModel.fullName;
-          userModelProvider.setLoading(false);
-        } else {
-          showErrorSnackBar(
-              context, response.error?.message ?? "Unknown error occurred");
-          userModelProvider.setLoading(true);
-        }
-      } catch (e) {
-        print("$e");
-        showErrorSnackBar(context, "Failed to connect. Check your network.");
-        userModelProvider.setLoading(true);
-      }
-    } else {
-      try {
-        final response = await NetworkUtil.postData(endpoint, params);
-        if (response.isSuccess) {
-          passengerModel = passengerModelFromJson(response.payload!.data);
-          userModelProvider.setPassengerModel(passengerModel);
-          userModelProvider.setLoading(false);
-        } else {
-          showErrorSnackBar(
-              context, response.error?.message ?? "Unknown error occurred");
-          userModelProvider.setLoading(true);
-        }
-      } catch (e) {
-        print("$e");
-        showErrorSnackBar(context, "Failed to connect. Check your network.");
-        userModelProvider.setLoading(true);
-      }
-    }
-    // getUser();
-  }
-
-  void showErrorSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(message),
-      backgroundColor: Colors.red,
-    ));
-  }
 
   @override
   void initState() {
     super.initState();
       box = Hive.box('local_storage');
-      userId = box.get("UserId");
-      getUser();
-    
+      userId = box.get("UserId"); 
   }
 
   @override

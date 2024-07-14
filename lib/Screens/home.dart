@@ -9,8 +9,12 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../Helpers/app_text_style.dart';
+import '../Providers/last_voice.dart';
 import '../databases/end_points.dart';
 import '../databases/network_utils.dart';
+import '../models/Driver/driver_model.dart';
+import '../models/Passenger/passenger_model.dart';
+import '../models/last_voice_model.dart';
 import '../widgets/home_deriver_info.dart';
 import '../widgets/home_voice_content.dart';
 import '../widgets/mytextfield.dart';
@@ -42,11 +46,93 @@ class HomeScreenState extends State<HomeScreen> {
   TextEditingController locationController = TextEditingController();
 
   String? driverEmail;
+  String? userId;
+
+  late PassengerModel passengerModel;
+  late DriverModel driverModel;
+  late LastVoice lastVoice;
 
   void updateIsAudioPage(state) {
     setState(() {
       isAuduoPage = state;
     });
+  }
+
+  Future<void> getUser() async {
+    bool isDriver = widget.isDriver;
+    final userModelProvider =
+        Provider.of<UserModelProvider>(context, listen: false);
+    userModelProvider.setLoading(true);
+    String endpoint = isDriver ? getDriverEndPoint : getPassengerEndPoint;
+    final params = isDriver ? {"email": userId} : {"phoneNumber": userId};
+    if (isDriver) {
+      try {
+        final response = await NetworkUtil.postData(endpoint, params);
+        if (response.isSuccess) {
+          print(response.payload!.data);
+          driverModel = driverModelFromJson(response.payload!.data);
+          userModelProvider.setDriverModel(driverModel);
+          userModelProvider.setLoading(false);
+        } else {
+          showErrorSnackBar(
+              context, response.error?.message ?? "Unknown error occurred");
+          userModelProvider.setLoading(true);
+        }
+      } catch (e) {
+        print("$e");
+        showErrorSnackBar(context, "Failed to connect. Check your network.");
+        userModelProvider.setLoading(true);
+      }
+    } else {
+      try {
+        final response = await NetworkUtil.postData(endpoint, params);
+        if (response.isSuccess) {
+          passengerModel = passengerModelFromJson(response.payload!.data);
+          userModelProvider.setPassengerModel(passengerModel);
+          userModelProvider.setLoading(false);
+        } else {
+          showErrorSnackBar(
+              context, response.error?.message ?? "Unknown error occurred");
+          userModelProvider.setLoading(true);
+        }
+      } catch (e) {
+        print("$e");
+        showErrorSnackBar(context, "Failed to connect. Check your network.");
+        userModelProvider.setLoading(true);
+      }
+    }
+    // getUser();
+  }
+
+  Future<void> getVoice(String driverEmail) async {
+    final lastVoiceModelProvider =
+        Provider.of<LastVoiceModelProvider>(context, listen: false);
+    lastVoiceModelProvider.setLoading(true);
+    final params = {"email": driverEmail};
+    print(params);
+    try {
+      final response = await NetworkUtil.postData(getLastVoiceEndPoint, params);
+      if (response.isSuccess) {
+        lastVoice = lastVoiceFromJson(response.payload!.data);
+        lastVoiceModelProvider.setLastVoiceModel(lastVoice);
+        lastVoiceModelProvider.setLoading(false);
+      } else {
+        showErrorSnackBar(
+            context, response.error?.message ?? "Unknown error occurred");
+        lastVoiceModelProvider.setLoading(true);
+      }
+    } catch (e) {
+      print("$e");
+      showErrorSnackBar(context, "Failed to connect. Check your network.");
+      lastVoiceModelProvider.setLoading(true);
+    }
+  }
+
+  void showErrorSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(message),
+      backgroundColor: Colors.red,
+    ));
   }
 
   @override
@@ -55,6 +141,11 @@ class HomeScreenState extends State<HomeScreen> {
     late Box box;
     box = Hive.box('local_storage');
     driverEmail = box.get('UserId');
+    userId = driverEmail;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getUser();
+      getVoice(driverEmail!);
+    });
   }
 
   @override
@@ -226,7 +317,8 @@ class HomeScreenState extends State<HomeScreen> {
       location,
     );
 
-    bool check = nameError.isEmpty && locationError.isEmpty && mobileError.isEmpty;
+    bool check =
+        nameError.isEmpty && locationError.isEmpty && mobileError.isEmpty;
 
     if (check) {
       setState(() => isLoading = true);
@@ -266,13 +358,6 @@ class HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void showErrorSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(message),
-      backgroundColor: Colors.red,
-    ));
-  }
-
   validation(
     name,
     phone,
@@ -300,5 +385,3 @@ class HomeScreenState extends State<HomeScreen> {
     });
   }
 }
-
-
