@@ -72,6 +72,7 @@ class HomeScreenState extends State<HomeScreen> {
           print(response.payload!.data);
           driverModel = driverModelFromJson(response.payload!.data);
           userModelProvider.setDriverModel(driverModel);
+          getVoice(userId!);
           userModelProvider.setLoading(false);
         } else {
           showErrorSnackBar(
@@ -89,6 +90,7 @@ class HomeScreenState extends State<HomeScreen> {
         if (response.isSuccess) {
           passengerModel = passengerModelFromJson(response.payload!.data);
           userModelProvider.setPassengerModel(passengerModel);
+          getVoice(userModelProvider.passengerModel.driverEmail);
           userModelProvider.setLoading(false);
         } else {
           showErrorSnackBar(
@@ -144,7 +146,6 @@ class HomeScreenState extends State<HomeScreen> {
     userId = driverEmail;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getUser();
-      getVoice(driverEmail!);
     });
   }
 
@@ -158,6 +159,41 @@ class HomeScreenState extends State<HomeScreen> {
           Header(
             widget: widget,
           ),
+          Visibility(
+            visible: widget.isDriver,
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () => updateIsAudioPage(true),
+                    child: Text(
+                      "Audio",
+                      style: TextStyle(
+                        color: AppColors.text,
+                        fontWeight: AppTextStyles.semibold,
+                        fontSize: calculateHeightRatio(14, context),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => updateIsAudioPage(false),
+                    child: Text(
+                      "Add new Passenger",
+                      style: TextStyle(
+                        color: AppColors.secondary,
+                        fontWeight: AppTextStyles.semibold,
+                        fontSize: calculateHeightRatio(10, context),
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
           isAuduoPage
               ? isVoicePage
                   ? HomeVoiceContent(
@@ -167,38 +203,6 @@ class HomeScreenState extends State<HomeScreen> {
                   : HomeDriverInfo(userModelProvider: userModelProvider)
               : Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          GestureDetector(
-                            onTap: () => updateIsAudioPage(true),
-                            child: Text(
-                              "Audio",
-                              style: TextStyle(
-                                color: AppColors.text,
-                                fontWeight: AppTextStyles.semibold,
-                                fontSize: calculateHeightRatio(14, context),
-                              ),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () => updateIsAudioPage(false),
-                            child: Text(
-                              "Add new Passenger",
-                              style: TextStyle(
-                                color: AppColors.secondary,
-                                fontWeight: AppTextStyles.semibold,
-                                fontSize: calculateHeightRatio(10, context),
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                     buildUserDetailsForm(),
                     heightSpace(40),
                     Padding(

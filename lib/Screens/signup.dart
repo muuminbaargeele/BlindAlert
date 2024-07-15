@@ -204,27 +204,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Text(
-          "Have an account?",
-          style: TextStyle(
-            color: Colors.grey,
-            fontSize: calculateHeightRatio(14, context),
-          ),
-        ),
-        const SizedBox(width: 2),
-        InkWell(
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const LoginScreen()),
-          ),
-          child: Text(
-            "Sign in",
-            style: TextStyle(
-              color: AppColors.text,
-              fontWeight: FontWeight.bold,
-              fontSize: calculateHeightRatio(13, context),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              "Have an account?",
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: calculateHeightRatio(14, context),
+              ),
             ),
-          ),
+            const SizedBox(width: 2),
+            InkWell(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const LoginScreen()),
+              ),
+              child: Text(
+                "Sign in",
+                style: TextStyle(
+                  color: AppColors.text,
+                  fontWeight: FontWeight.bold,
+                  fontSize: calculateHeightRatio(13, context),
+                ),
+              ),
+            ),
+          ],
         )
       ],
     );
